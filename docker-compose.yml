@@ -1,0 +1,68 @@
+version: '3'
+services:
+  emqx-enterprise:
+    image: emqx/emqx-enterprise:5.0.2
+    # command: /opt/entrypoint.sh
+    container_name: emqx-enterprise
+    ports:
+      - 1883:1883
+      - 8083:8083
+      - 8084:8084
+      - 8883:8883
+      - 18083:18083
+    # environment:
+    #   EMQX_API_KEY__BOOTSTRAP_FILE: /opt/emqx/etc/bootstrap_api_key.conf
+    networks:
+      - emqx-net
+    # volumes:
+    #   - $PWD/data-integration/entrypoint.sh:/opt/entrypoint.sh
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper
+    container_name: zookeeper
+    ports:
+      - 2181:2181
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    networks:
+      - emqx-net
+
+  kafka:
+    image: confluentinc/cp-kafka
+    container_name: kafka
+    entrypoint: bash -c "kafka-topics --create --topic my-kafka-topic --partitions 1 --replication-factor 1 --bootstrap-server kafka:9092"
+    ports:
+      - 9092:9092
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+    networks:
+      - emqx-net
+    depends_on:
+      - zookeeper
+
+  mqtt-to-kafka-node:
+    image: node:14-alpine
+    command: sh -c "cd /app && yarn install && node index.js"
+    container_name: mqtt-to-kafka-node
+    volumes:
+      - $PWD/nodejs:/app
+    networks:
+      - emqx-net
+    depends_on:
+      - kafka
+      - emqx-enterprise
+  
+  iot-simulator:
+    image: docker.pkg.github.com/wivwiv/iot-simulator/iot-simulator:1.0.0
+    command: sh -c "iot-simulator --host emqx-enterprise --count 20 --sense tesla"
+    container_name: iot-simulator
+    networks:
+      - emqx-net
+    depends_on:
+      - emqx-enterprise
+
+networks:
+  emqx-net:
+    driver: bridge
