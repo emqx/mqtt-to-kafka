@@ -1,0 +1,10 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "kafkajs": "^2.2.4",
+    "mqtt": "^4.3.7"
+  }
+}
