@@ -6,25 +6,47 @@ Streaming IoT data into Confluent/Kafka using MQTT and EMQX | MQTT Kafka Integra
 
 You can use EMQX [data integration](https://www.emqx.com/en/solutions/mqtt-data-integration) or write your own application to achieve this task. This project provides the corresponding sample code.
 
+## Docker Compose
+
+You can use Docker Compose to quick start this project.
+
+1. Start confluent with Docker Compose:
+
+```bash
+docker compose up -d
+```
+
+2. View continer status:
+
+```bash
+docker compose ps
+```
+
+3. If all containers are running, you can access the following services:
+
+```bash
+docker exec -it kafka \
+  kafka-console-consumer \
+  --topic my-kafka-topic \
+  --from-beginning \
+  --bootstrap-server localhost:9092
+```
+
+You can see the message from Kafka consumer:
+
+```json
+{"vin":"EDF226K7LZTZ51222","speed":39,"odometer":68234,"soc":87,"elevation":4737,"heading":33,"accuracy":24,"power":97,"shift_state":"D","range":64,"est_battery_range":307,"gps_as_of":1681704127537,"location":{"latitude":"83.3494","longitude":"141.9851"},"timestamp":1681704127537}
+```
+
+If you want to manually start the project, you can follow the steps below.
+
 ## Prerequisites
 
 - Node.js: v14.15.4+
 - Java: 1.8+
-- EMQX: 5.0.0+
+- EMQX: 5.0.2+
 - Kafka: 2.8.0+
-
-## Docker Compose
-
-You can use Docker Compose to start this project.
-
-```bash
-docker compose up -d
-
-docker exec -it kafka \
-  kafka-topics --create --topic my-kafka-topic --partitions 1 --replication-factor 1 --bootstrap-server localhost:9092
-
-docker ps -a
-```
+- IoT Simulator: 1.0.0+
 
 ## Installation
 
@@ -46,6 +68,7 @@ docker run -d --name kafka \
   --network emqx-net \
   -p 9092:9092 \
   -e KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 \
+  -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 \
   -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 \
   confluentinc/cp-kafka
 ```
@@ -54,7 +77,9 @@ docker run -d --name kafka \
 
 ```bash
 docker exec -it kafka \
-  kafka-topics --create --topic my-kafka-topic --partitions 1 --replication-factor 1 --bootstrap-server localhost:9092
+  kafka-topics --create --topic my-kafka-topic \
+  --partitions 1 --replication-factor 1 \
+  --bootstrap-server localhost:9092
 ```
 
 3. Start EMQX with Docker:
@@ -102,21 +127,28 @@ docker pull docker.pkg.github.com/wivwiv/iot-simulator/iot-simulator
 
 2. Start IoT Solumation, it will generate random IoT data and send to EMQX `iot_simulator/<clientid>` topic:
 
-```bash
-docker run -it --rm --network emqx-net \
-  docker.pkg.github.com/wivwiv/iot-simulator/iot-simulator bash
-docker run -it --rm --network emqx-net docker.pkg.github.com/wivwiv/iot-simulator/iot-simulator bash
-  
-> a77c057555b9:/app# 
-iot-simulator --host emqx-enterprise --sense tesla --count 20
-```
+  ```bash
+  docker run -it --rm --network emqx-net \
+    docker.pkg.github.com/wivwiv/iot-simulator/iot-simulator \
+    iot-simulator --host emqx-enterprise --sense tesla --count 20
+  ```
 
 3. Start Kafka consumer to consume message from `my-kafka-topic` topic:
 
-```bash
-docker exec -it kafka \
-  kafka-console-consumer \
-  --topic my-kafka-topic \
-  --from-beginning \
-  --bootstrap-server localhost:9092
-```
+  ```bash
+  docker exec -it kafka \
+    kafka-console-consumer \
+    --topic my-kafka-topic \
+    --from-beginning \
+    --bootstrap-server localhost:9092
+  ```
+
+Now, You can see the message from Kafka consumer:
+
+  ```JSON
+  {"vin":"EDF226K7LZTZ51222","speed":39,"odometer":68234,"soc":87,"elevation":4737,"heading":33,"accuracy":24,"power":97,"shift_state":"D","range":64,"est_battery_range":307,"gps_as_of":1681704127537,"location":{"latitude":"83.3494","longitude":"141.9851"},"timestamp":1681704127537}
+  ```
+
+## License
+
+[Apache License 2.0](./LICENSE)
