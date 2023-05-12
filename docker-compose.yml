@@ -1,7 +1,7 @@
 version: '3'
 services:
   emqx-enterprise:
-    image: emqx/emqx-enterprise:5.0.2
+    image: emqx/emqx-enterprise:5.0.3
     # command: /opt/entrypoint.sh
     container_name: emqx-enterprise
     ports:
@@ -10,12 +10,11 @@ services:
       - 8084:8084
       - 8883:8883
       - 18083:18083
-    # environment:
-    #   EMQX_API_KEY__BOOTSTRAP_FILE: /opt/emqx/etc/bootstrap_api_key.conf
     networks:
       - emqx-net
-    # volumes:
-    #   - $PWD/data-integration/entrypoint.sh:/opt/entrypoint.sh
+    volumes:
+      - $PWD/cluster.hocon:/opt/emqx/data/configs/cluster.hocon
+    
 
   zookeeper:
     image: confluentinc/cp-zookeeper
@@ -35,33 +34,25 @@ services:
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      # Set replication factor to 1 for single node
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      # Auto create topic
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
     networks:
       - emqx-net
     depends_on:
       - zookeeper
 
-  mqtt-to-kafka-node:
-    image: node:14-alpine
-    command: sh -c "cd /app && yarn install && node index.js"
-    container_name: mqtt-to-kafka-node
-    volumes:
-      - $PWD/nodejs:/app
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - 3000:3000
     networks:
       - emqx-net
     depends_on:
+      - emqx-enterprise
       - kafka
-      - emqx-enterprise
-  
-  iot-simulator:
-    image: docker.pkg.github.com/wivwiv/iot-simulator/iot-simulator:1.0.0
-    command: sh -c "iot-simulator --host emqx-enterprise --count 20 --sense tesla"
-    container_name: iot-simulator
-    networks:
-      - emqx-net
-    depends_on:
-      - emqx-enterprise
 
 networks:
   emqx-net:
