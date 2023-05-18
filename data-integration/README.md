@@ -1,6 +1,6 @@
 # MQTT to Kafka - Data Integration
 
-Use out-of-the-box data integration provided by EMQX to streaming message into Confluent/Kafka without writing code.
+Use out-of-the-box data integration provided by EMQX to streaming message into wurstmeister/kafka without writing code.
 
 ## Prerequisites
 

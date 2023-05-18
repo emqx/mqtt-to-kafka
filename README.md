@@ -1,6 +1,6 @@
 # mqtt-to-kafka
 
-Streaming IoT data into Confluent/Kafka using MQTT and EMQX | MQTT Kafka Integration
+Streaming IoT data into wurstmeister/kafka using MQTT and EMQX | MQTT Kafka Integration
 
 ## TODO
 
@@ -32,7 +32,7 @@ docker compose ps
 
 ```bash
 docker exec -it kafka \
-  kafka-console-consumer \
+  kafka-console-consumer.sh \
   --topic my-vehicles \
   --from-beginning \
   --bootstrap-server localhost:9092
@@ -55,7 +55,7 @@ If you want to manually start the project, you can follow the steps below.
 | [MQTTX CLI](https://mqttx.app/cli) | 1.9.3+  | Command-line tool used to generate simulated data for testing the system.        |
 | [Grafana](https://grafana.com/)   | 9.5.1+  | Visualization platform utilized to display and analyze the collected data.       |
 
-Note: In this project, [Confluent's](https://confluent.io) Kafka distribution is used for the Kafka.
+Note: In this project we refer to [kafka-docker](https://github.com/wurstmeister/kafka-docker)
 
 ## License
 
