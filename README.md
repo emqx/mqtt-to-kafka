@@ -2,10 +2,6 @@
 
 Streaming IoT data into Confluent/Kafka using MQTT and EMQX | MQTT Kafka Integration.
 
-## TODO
-
-1. Add MQTTX CLI and run simulate MQTT client to publish messages to EMQX
-
 ## Introduction
 
 This is a demo project that shows how to use EMQX and Kafka to build a streaming data pipeline. The project uses MQTTX CLI to simulate the MQTT client to publish vehicle data to EMQX, and then uses EMQX Data Integration to streaming the data to Kafka.

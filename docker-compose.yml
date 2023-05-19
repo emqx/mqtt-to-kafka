@@ -44,6 +44,16 @@ services:
       - emqx-net
     depends_on:
       - zookeeper
+    
+  mqttx-cli:
+    image: emqx/mqttx-cli:v1.9.3
+    container_name: mqttx-cli
+    # wait for emqx-enterprise to start
+    command: /bin/sh -c "sleep 10 && mqttx simulate -sc tesla -c 10 -h emqx-enterprise"
+    networks:
+      - emqx-net
+    depends_on:
+      - emqx-enterprise
 
 networks:
   emqx-net:
