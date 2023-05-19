@@ -2,7 +2,7 @@ bridges {
   kafka {
     "my-kafka" {
       authentication = "none"
-      bootstrap_hosts = "kafka:9092"
+      bootstrap_hosts = "kafka-demo:9092"
       connect_timeout = "5s"
       enable = true
       kafka {

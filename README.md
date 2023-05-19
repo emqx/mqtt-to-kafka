@@ -10,6 +10,12 @@ Streaming IoT data into Confluent/Kafka using MQTT and EMQX | MQTT Kafka Integra
 
 This is a demo project that shows how to use EMQX and Kafka to build a streaming data pipeline. The project uses MQTTX CLI to simulate the MQTT client to publish vehicle data to EMQX, and then uses EMQX Data Integration to streaming the data to Kafka.
 
+## Init
+```
+git submodule init
+git submodule update
+```
+
 ## Docker Compose
 
 You can use Docker Compose to quick start this project.
