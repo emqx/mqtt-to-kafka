@@ -2,7 +2,7 @@ apiVersion: 1
 
 providers:
   - name: EMQX
-    folder: "EMQX5-EE"
+    folder: "EMQX-Enterprise"
     folderUid: ""
     options:
       path: "/grafana-dashboard-emqx5-ee"
