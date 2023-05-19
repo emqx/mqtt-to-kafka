@@ -2,51 +2,19 @@
 
 Streaming IoT data into Confluent/Kafka using MQTT and EMQX | MQTT Kafka Integration.
 
-## TODO
-
-1. Add MQTTX CLI and run simulate MQTT client to publish messages to EMQX
-
 ## Introduction
 
 This is a demo project that shows how to use EMQX and Kafka to build a streaming data pipeline. The project uses MQTTX CLI to simulate the MQTT client to publish vehicle data to EMQX, and then uses EMQX Data Integration to streaming the data to Kafka.
 
-## Init
-```
-git submodule init
-git submodule update
-```
+## How to use
 
-## Docker Compose
-
-You can use Docker Compose to quick start this project.
-
-1. Start confluent with Docker Compose:
-
-```bash
-docker compose up -d
-```
-
-2. View continer status:
-
-```bash
-docker compose ps
-```
-
-3. If all containers are running, you can access the following services:
-
-```bash
-docker exec -it kafka \
-  kafka-console-consumer.sh \
-  --topic my-vehicles \
-  --from-beginning \
-  --bootstrap-server localhost:9092
-```
+Please make sure you have installed the docker, and just run the `make` command to start all of the containers.
 
 You can see the message from Kafka consumer:
 
-```json
-{"vin":"EDF226K7LZTZ51222","speed":39,"odometer":68234,"soc":87,"elevation":4737,"heading":33,"accuracy":24,"power":97,"shift_state":"D","range":64,"est_battery_range":307,"gps_as_of":1681704127537,"location":{"latitude":"83.3494","longitude":"141.9851"},"timestamp":1681704127537}
-```
+ ```json
+ {"vin":"EDF226K7LZTZ51222","speed":39,"odometer":68234,"soc":87,"elevation":4737,"heading":33,"accuracy":24,"power":97,"shift_state":"D","range":64,"est_battery_range":307,"gps_as_of":1681704127537,"location":{"latitude":"83.3494","longitude":"141.9851"},"timestamp":1681704127537}
+ ```
 
 ## Scenario
 
@@ -59,8 +27,11 @@ Some of the prominent use cases where this architecture is applicable include Te
 | Name      | Version | Description                                                                      |
 | --------- | ------- | -------------------------------------------------------------------------------- |
 | [EMQX Enterprise](https://www.emqx.com/en/products/emqx)      | 5.0.3+  | MQTT broker used for message exchange between MQTT clients and the Kafka system. |
+| [EMQX Exporter](https://github.com/emqx/emqx-exporter)      | 0.1 | Prometheus exporter for EMQX |
+| [MQTTX CLI](https://mqttx.app/cli) | 1.9.3+  | Command-line tool used to generate simulated data for testing.        |
+| [Prometheus](https://prometheus.io/)   | v2.44.0  | Open-source systems monitoring and alerting toolkit.       |
+| [Grafana](https://grafana.com/)   | 9.5.1+  | Visualization platform utilized to display and analyze the collected data.       |
 | [Kafka](https://kafka.apache.org/)     | 2.8.0+  | Distributed streaming platform for collecting, storing, and processing data.     |
-| [MQTTX CLI](https://mqttx.app/cli) | 1.9.3+  | Command-line tool used to generate simulated data for testing the system.        |
 
 Note: In this project we refer to [kafka-docker](https://github.com/wurstmeister/kafka-docker).
 
